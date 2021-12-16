@@ -10,6 +10,7 @@ import Test.Question.BaseQuestion;
 import Test.Question.NumericQuestion;
 import Test.Question.StringQuestion;
 import Test.Test;
+import Test.ExtendedTest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,12 +27,16 @@ public class Initializer
                 "Product", "Введите имя продукта, который обязательно должен быть"
         ));
 
+        BaseQuestion additional_question = new StringQuestion(
+                "Allergy", "Введите имя продукта, на который у вас может быть аллергия");
+
         IDatabase database = new LocalDataBase(
                 "recipe.bin", "current.bin", "products.bin"
         );
+
         Storage storage = new Storage(database.loadProducts(), database.loadRecipes());
 
-        Test test = new Test(questions, database.loadRecipes());
+        Test test = new ExtendedTest(questions, database.loadRecipes(), additional_question);
 
         SystemManager manager = new SystemManager(storage, database, test);
 
