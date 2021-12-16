@@ -10,6 +10,7 @@ import Test.Question.BaseQuestion;
 import Test.Question.NumericQuestion;
 import Test.Question.StringQuestion;
 import Test.Test;
+import Test.ExtendedTest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,12 +27,14 @@ public class Initializer
                 "Product", "Введите имя продукта, который обязательно должен быть"
         ));
 
+        BaseQuestion additional_question = new NumericQuestion("Count", "Ввидите количество порций");
+
         IDatabase database = new LocalDataBase(
                 "recipe.bin", "current.bin", "products.bin"
         );
         Storage storage = new Storage(database.loadProducts(), database.loadRecipes());
 
-        Test test = new Test(questions, database.loadRecipes());
+        ExtendedTest test = new ExtendedTest(questions, database.loadRecipes(), additional_question);
 
         SystemManager manager = new SystemManager(storage, database, test);
 
@@ -44,7 +47,7 @@ public class Initializer
                 }}
         );
 
-        CookAction cook_action = new CookAction(
+        CookAction cook_action = new ExtendedCookAction(
                 manager, new HashMap<Integer, IActionHandler>()
                 {{
                     put(0, open_menu);
@@ -126,10 +129,12 @@ public class Initializer
            2, "Салат", "Завтрак", stages, products
         ));
 
-        //ArrayList<Product> storage_products = new ArrayList<>();
-        //storage_products.add(new Product("Яйцо", 15));
+        ArrayList<Product> storage_products = new ArrayList<>();
+        storage_products.add(new Product("Яйцо", 15));
+        storage_products.add(new Product("Салат", 15));
+        storage_products.add(new Product("Помидор", 15));
 
-        //database.saveProducts(storage_products);
+        database.saveProducts(storage_products);
         database.saveRecipes(recipes);
     }
 }
