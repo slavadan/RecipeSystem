@@ -1,6 +1,7 @@
 import Data.IDatabase;
 import Data.LocalDataBase;
 import Handlers.*;
+import Manager.ExtendedManager;
 import Manager.SystemManager;
 import Recipe.Product.Product;
 import Recipe.Recipe;
@@ -33,7 +34,7 @@ public class Initializer
 
         Test test = new Test(questions, database.loadRecipes());
 
-        SystemManager manager = new SystemManager(storage, database, test);
+        ExtendedManager manager = new ExtendedManager(storage, database, test);
 
         ExitAction exit = new ExitAction(manager);
 
@@ -74,7 +75,7 @@ public class Initializer
                 }}
         );
 
-        WatchCatalogAction watch_catalog = new WatchCatalogAction(
+        WatchCatalogAction watch_catalog = new ExtendedWatch(
                 manager, new HashMap<Integer, IActionHandler>()
                 {{
                     put(0, open_menu);
