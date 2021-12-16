@@ -109,7 +109,7 @@ public class Initializer
         recipes.add(new Recipe(
                 1, "Жаренное яйцо", "Завтрак",
                 stages, products
-                ));
+        ));
 
         stages = new LinkedList<Stage>();
         stages.add(new Stage("Нарезать помидоры"));
@@ -123,13 +123,16 @@ public class Initializer
         products.add(new Product("Капуста", 2));
 
         recipes.add(new Recipe(
-           2, "Салат", "Завтрак", stages, products
+                2, "Салат", "Завтрак", stages, products
         ));
 
-        //ArrayList<Product> storage_products = new ArrayList<>();
-        //storage_products.add(new Product("Яйцо", 15));
+        ArrayList<Product> storage_products = new ArrayList<>();
+        storage_products.add(new Product("Яйцо", 15));
+        storage_products.add(new Product("Масло", 15));
+        storage_products.add(new Product("Помидор", 1));
+        storage_products.add(new Product("Капуста", 15));
 
-        //database.saveProducts(storage_products);
+        database.saveProducts(storage_products);
         database.saveRecipes(recipes);
     }
 }
