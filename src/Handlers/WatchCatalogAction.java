@@ -25,46 +25,66 @@ public class WatchCatalogAction implements IActionHandler
     {
         ArrayList<Recipe> recipes = manager.storage.getRecipes();
 
+        showRecipes(recipes);
+
+        chooseRecipe();
+    }
+
+    public void checkProductsInStorage(Recipe recipe)
+    {
+        for(Product product: recipe.products)
+        {
+            System.out.println("Требуется в рецепте: " + product.name + " " + product.count);
+
+            Product storage_product = manager.storage.getProduct(product.name);
+
+            if (storage_product != null)
+                System.out.println("Есть на складе: " + storage_product.count);
+            else
+                System.out.println("На складе нет такого продукта!");
+        }
+    }
+
+    public Recipe chooseRecipeByID()
+    {
         Scanner console = new Scanner(System.in);
 
-        int choose;
+        System.out.println("Введите номер рецепта");
 
+        int choose = console.nextInt();
+
+        for(Recipe recipe: this.manager.storage.getRecipes())
+            if (recipe.getId() == choose)
+                return recipe;
+
+        return null;
+    }
+
+    public void showRecipes(ArrayList<Recipe> recipes)
+    {
         for(Recipe recipe: recipes)
         {
-
             System.out.println(recipe.getId() + " " + recipe.getRecipeName());
-
         }
+    }
+
+    public void chooseRecipe()
+    {
+        Scanner console = new Scanner(System.in);
 
         System.out.println("1. Посмотреть рецепт.\n0. Выйти в меню.");
-        choose = console.nextInt();
+
+        int choose = console.nextInt();
 
         if (choose == 1)
         {
-            System.out.println("Введите номер рецепта");
-            choose = console.nextInt();
-
-            Recipe choose_recipe = null;
-            for(Recipe recipe: recipes)
-                if (recipe.getId() == choose)
-                    choose_recipe = recipe;
+            Recipe choose_recipe = chooseRecipeByID();
 
             System.out.println(choose_recipe.recipe_name);
 
-            for(Product product: choose_recipe.products)
-            {
-                System.out.println("Требуется в рецепте: " + product.name + " " + product.count);
-
-                Product storage_product = manager.storage.getProduct(product.name);
-
-                if (storage_product != null)
-                    System.out.println("Есть на складе: " + storage_product.count);
-                else
-                    System.out.println("На складе нет такого продукта!");
-            }
+            checkProductsInStorage(choose_recipe);
 
         }
         actions.get(0).execute();
-
     }
 }

@@ -3,8 +3,6 @@ package Handlers;
 import Manager.SystemManager;
 import Recipe.Product.Product;
 import Recipe.Recipe;
-
-import java.awt.print.PageFormat;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -22,6 +20,46 @@ public class CookAction implements IActionHandler
 
     @Override
     public void execute()
+    {
+        Scanner console = new Scanner(System.in);
+
+        System.out.println("1.Начать готовку");
+        System.out.println("0.Выйти в меню");
+
+        int choose = console.nextInt();
+
+        switch (choose) {
+            case 1 -> cookCurrentRecipe();
+            case 0 -> actions.get(0).execute();
+        }
+    }
+
+
+    protected boolean isEnoughProducts()
+    {
+        int counter = 0;
+
+        for(Product recipe_product: this.manager.current_recipe.products)
+            for(Product storage_product: this.manager.storage.getProducts())
+                if (recipe_product.count <= storage_product.count & recipe_product.name.equals(storage_product.name))
+                    counter += 1;
+
+        return counter == this.manager.current_recipe.products.size();
+    }
+
+    protected void eraseProducts()
+    {
+        Recipe recipe = this.manager.current_recipe;
+
+        for(int i = 0; i < recipe.products.size(); ++i)
+        {
+            this.manager.storage.eraseProduct(
+                    recipe.products.get(i)
+            );
+        }
+    }
+
+    protected void cookCurrentRecipe()
     {
         if(!this.isEnoughProducts())
         {
@@ -48,26 +86,9 @@ public class CookAction implements IActionHandler
             }
         }
 
-        for(int i = 0; i < recipe.products.size(); ++i)
-        {
-            this.manager.storage.eraseProduct(
-                    recipe.products.get(i)
-            );
-        }
         System.out.println("Блюдо приготовлено");
+        eraseProducts();
         this.manager.current_recipe = null;
-        this.actions.get(0).execute();
     }
 
-    private boolean isEnoughProducts()
-    {
-        int counter = 0;
-
-        for(Product recipe_product: this.manager.current_recipe.products)
-            for(Product storage_product: this.manager.storage.getProducts())
-                if (recipe_product.count <= storage_product.count & recipe_product.name.equals(storage_product.name))
-                    counter += 1;
-
-        return counter == this.manager.current_recipe.products.size();
-    }
 }
