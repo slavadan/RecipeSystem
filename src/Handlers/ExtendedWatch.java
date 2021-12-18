@@ -24,94 +24,67 @@ public class ExtendedWatch extends WatchCatalogAction
     @Override
     public void execute()
     {
-        HashMap<String, ArrayList<Recipe>> recipes = this.manager.findFullRecipes();
-        Scanner console = new Scanner(System.in);
-        int choose = 0;
-
-        System.out.println("Продуктов хватает на " + recipes.get("Full").size() + " блюд");
-        System.out.println("Нужно купить продукты для " + recipes.get("NotFull").size() + " блюд");
-
-        System.out.println(
-                "1.Показать рецепты, которые можно приготовить\n" +
-                "2.Показать рецепты, которые нельзя приготовить\n"+
-                "0.Выйти в меню"
-        );
-
-        choose = console.nextInt();
-
-        switch (choose)
-        {
-            case 1:
-                for(Recipe recipe: recipes.get("Full"))
-                    System.out.println(recipe.recipe_name);
-                    actions.get(0).execute();
-                break;
-
-            case 2:
-                for(Recipe recipe: recipes.get("NotFull"))
-                    System.out.println("id:" + recipe.getId() + " -> " + recipe.recipe_name);
-
-                System.out.println("1.Поменять продукт\n0.Выйти в меню");
-                choose = console.nextInt();
-
-                if(choose == 1) { changeProduct(recipes.get("NotFull")); }
-                else
-                    actions.get(0).execute();
-
-                break;
-
-            case 0:
-                actions.get(0).execute();
-        }
-
+        this.manager.storage.setRecipes(this.manager.sort());
+        super.execute();
     }
 
-    private void changeProduct(ArrayList<Recipe> recipes)
+    @Override
+    public void checkProductsInStorage(Recipe recipe)
+    {
+        for(Product product: recipe.products)
+        {
+            System.out.println("Требуется в рецепте: " + product.name + " " + product.count);
+            Product storage_product = manager.storage.getProduct(product.name);
+
+            if (storage_product != null)
+                System.out.println("Есть на складе: " + storage_product.count);
+
+            if (storage_product.count < product.count || storage_product == null)
+                offerChangeProductInRecipe(recipe, product.name);
+        }
+    }
+
+    private void offerChangeProductInRecipe(Recipe recipe, String change_product_name)
     {
         ArrayList<Product> storage_products = this.manager.storage.getProducts();
+
         Scanner console = new Scanner(System.in);
-        int choose = 0;
+        int choose;
 
-        for(Recipe recipe: recipes)
-            System.out.println("id:" + recipe.getId() + " -> " + recipe.recipe_name);
+        System.out.println("""
+                Вы можете выбрать другой продукт!
+                1.Да
+                2.Нет
+                0.Выйти в меню"""
+        );
 
-        System.out.println("Введите номер рецепта");
-        choose = console.nextInt();
+       choose = console.nextInt();
 
-        Recipe current_recipe = null;
-        for(Recipe recipe: recipes)
-            if (recipe.getId() == choose)
-                current_recipe = recipe;
+       switch (choose)
+       {
+           case 1:
+               System.out.println("Доступные продукты на складе:");
+               for(Product product: storage_products)
+                   System.out.print(product.name + "количество -> " + product.count + "; ");
 
-        if(current_recipe == null)
-            actions.get(0).execute();
+               System.out.println("\nВведите имя продукта, на который хотите поменять");
+               String storage_product_name = console.nextLine();
 
-        System.out.println("Вы выбрали " + current_recipe.recipe_name);
+               System.out.println("\nВведите количество");
+               choose = console.nextInt();
 
-        System.out.println("Доступные продукты рецепта:");
-        for(Product product: current_recipe.products)
-            System.out.println(product.name + "; ");
+               for(int i = 0; i < recipe.products.size(); ++i)
+                   if (recipe.products.get(i).name.equals(change_product_name))
+                       recipe.products.remove(i);
 
-        System.out.println("Введите имя продукта, который хотите поменять");
-        String base_name = console.nextLine();
-        base_name = console.nextLine();
+               recipe.products.add(new Product(storage_product_name, choose));
+               break;
 
-        System.out.println("Доступные продукты на складе:");
-        for(Product product: storage_products)
-            System.out.print(product.name + "количество -> " + product.count + "; ");
+           case 2:
+               return;
 
-        System.out.println("\nВведите имя продукта, на который хотите поменять");
-        String change_name = console.nextLine();
-
-        System.out.println("\nВведите количество");
-        choose = console.nextInt();
-
-        for(int i = 0; i < current_recipe.products.size(); ++i)
-            if (current_recipe.products.get(i).name.equals(base_name))
-                current_recipe.products.remove(i);
-
-        current_recipe.products.add(new Product(change_name, choose));
-
-        actions.get(0).execute();
+           case 0:
+               actions.get(choose).execute();
+       }
     }
 }

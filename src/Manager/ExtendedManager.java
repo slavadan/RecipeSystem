@@ -1,13 +1,14 @@
 package Manager;
 
+
 import Data.IDatabase;
 import Recipe.Product.Product;
 import Recipe.Recipe;
 import Storage.Storage;
 import Test.Test;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class ExtendedManager extends SystemManager
 {
@@ -17,11 +18,10 @@ public class ExtendedManager extends SystemManager
         super(storage, database, test);
     }
 
-    public HashMap<String, ArrayList<Recipe>> findFullRecipes()
+    public ArrayList<Recipe> sort()
     {
-        HashMap<String, ArrayList<Recipe>> result = new HashMap<>();
-        result.put("Full", new ArrayList<Recipe>());
-        result.put("NotFull", new ArrayList<Recipe>());
+        ArrayList<Recipe> full = new ArrayList<Recipe>();
+        ArrayList<Recipe> not_full = new ArrayList<Recipe>();
 
         ArrayList<Recipe> recipes = storage.getRecipes();
 
@@ -42,10 +42,14 @@ public class ExtendedManager extends SystemManager
             }
 
             if (count >= aim)
-                result.get("Full").add(recipes.get(i));
+                full.add(recipes.get(i));
             else
-                result.get("NotFull").add(recipes.get(i)) ;
+                not_full.add(recipes.get(i)) ;
         }
+
+        ArrayList<Recipe> result = new ArrayList<Recipe>();
+        result.addAll(full);
+        result.addAll(not_full);
 
         return result;
     }
