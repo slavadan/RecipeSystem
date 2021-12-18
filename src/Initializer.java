@@ -22,7 +22,7 @@ public class Initializer
         ArrayList<BaseQuestion> questions = new ArrayList<>();
         questions.add(new NumericQuestion(
                 "Type", "1. Завтрак\n2. Обед\n3.Ужин"
-                ));
+        ));
         questions.add(new StringQuestion(
                 "Product", "Введите имя продукта, который обязательно должен быть"
         ));
@@ -44,46 +44,46 @@ public class Initializer
 
         MenuAction open_menu = new MenuAction(
                 manager, new HashMap<Integer, IActionHandler>()
-                {{
-                    put(0, exit);
-                }}
+        {{
+            put(0, exit);
+        }}
         );
 
         CookAction cook_action = new CookAction(
                 manager, new HashMap<Integer, IActionHandler>()
-                {{
-                    put(0, open_menu);
-                }}
+        {{
+            put(0, open_menu);
+        }}
         );
 
         ContinueRecipeAction continue_recipe = new ContinueRecipeAction(
                 manager, new HashMap<Integer, IActionHandler>()
-                {{
-                    put(1, cook_action);
-                    put(2, open_menu);
-                }}
+        {{
+            put(1, cook_action);
+            put(2, open_menu);
+        }}
         );
 
         RegisterProductAction register = new RegisterProductAction(
                 manager, new HashMap<Integer, IActionHandler>()
-                {{
-                    put(1, open_menu);
-                }}
+        {{
+            put(1, open_menu);
+        }}
         );
 
         FindNewRecipeAction find_recipe = new FindNewRecipeAction(
                 manager, new HashMap<Integer, IActionHandler>()
-                {{
-                    put(0, open_menu);
-                    put(1, cook_action);
-                }}
+        {{
+            put(0, open_menu);
+            put(1, cook_action);
+        }}
         );
 
         WatchCatalogAction watch_catalog = new WatchCatalogAction(
                 manager, new HashMap<Integer, IActionHandler>()
-                {{
-                    put(0, open_menu);
-                }}
+        {{
+            put(0, open_menu);
+        }}
         );
 
         open_menu.addAction(1, continue_recipe);
@@ -114,7 +114,7 @@ public class Initializer
         recipes.add(new Recipe(
                 1, "Жаренное яйцо", "Завтрак",
                 stages, products
-                ));
+        ));
 
         stages = new LinkedList<Stage>();
         stages.add(new Stage("Нарезать помидоры"));
@@ -128,7 +128,7 @@ public class Initializer
         products.add(new Product("Капуста", 2));
 
         recipes.add(new Recipe(
-           2, "Салат", "Завтрак", stages, products
+                2, "Салат", "Завтрак", stages, products
         ));
 
         //ArrayList<Product> storage_products = new ArrayList<>();

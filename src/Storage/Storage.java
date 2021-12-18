@@ -19,6 +19,8 @@ public class Storage
     public ArrayList<Recipe> getRecipes() { return this.recipes; }
     public ArrayList<Product> getProducts() { return this.products; }
 
+    public void setProducts(ArrayList<Product> products) { this.products = products; }
+    public void setRecipes(ArrayList<Recipe> recipes) { this.recipes = recipes; }
     public void addProduct(String input_name, int input_count)
     {
         for (Product product: this.products)
